@@ -1,7 +1,9 @@
-# use this code to generate HEATMAPS for the thesis/paper
+# use this code to generate effect size HEATMAPS for the thesis/paper
 # this code creates heatmaps for anova P-values and means as a function of condition cutoff
 # quantiles. The p-values are for ANOVA
 # you can also CHECK THE RESIDUALS and export an ANOVA table to Word
+# See also compareERP.R (similar code).
+
 cat("\014")
 library(plyr)
 library(Rmisc)
@@ -17,18 +19,31 @@ library(ez)
 library(apa)
 cat("\014")
 ############## PARAMETERS #############################
-bounds = c(0.05, 0.95)
-step = 0.05
+
+subjects = c('KOK', 'GRU', 'ELT','KOZ', 'POG', 'KOS', 'ROM', 'SHE', 'BUL')
+languages = c('er', 'RE')
+
+# read in the data:
+df <- read.csv("/Users/RomanKoshkin/Documents/R/dataframe_0.25-30Hz.csv")
+
+bounds = c(0.05, 0.95)  # quantilies
+step = 0.1              # step size
+
+# we'll need this to monitor the progress:
 total = (length(seq(bounds[1], bounds[2], by = step)))^2/2
 
+# set the window of interest (mu_N1 or mu_P1):
 win = "mu_N1"
+
+# define the model formula:
 formula <- as.formula(paste(win," ~ lang * load + Error(subj / (lang * load))", sep=""))
 
+# ways to estimate WM load:
 estimatorVector <- c("CLred", "CWred", "SYL", "CLnored", "CWnored")
 
-
-
+# that's for creating the plots that can be pasted into the paper:
 newlabels <- c( "CLall", "CWall", "SYL", "CW", "CL")
+
 jj <- 0
 plot1 <- list()
 plot2 <- list()
@@ -39,10 +54,6 @@ plot6 <- list()
 plot7 <- list()
 plot8 <- list()
 ###############################################################
-
-subjects = c('KOK', 'GRU', 'ELT','KOZ', 'POG', 'KOS', 'ROM', 'SHE', 'BUL')
-languages = c('er', 'RE')
-df <- read.csv("/Users/RomanKoshkin/Documents/R/dataframe_0.25-30Hz.csv")
 
 HI <- seq(0.05, 0.95, by = step)
 
@@ -147,10 +158,13 @@ plot2[[jj]] <- ggplot(data = P[-c(1), ], aes(x = hiQ, y = loQ)) + geom_raster(ae
 plot3[[jj]] <- ggplot(data = P[-c(1), ], aes(x = hiQ, y = loQ)) + geom_raster(aes(fill = langXload)) + ggtitle(paste(tit, "Load x S.Lang.")) + scale_fill_gradientn(colours=clrs,breaks=b) + Them
 
 }
+
+# plot p-values (exploratory):
 # qq <- list()
 # qq <- rbind(plot1,plot2, plot3)
 # plot_grid(plotlist = qq, nrow = 5, ncol = 3, align = "v")
 
+# plot effect sizes:
 ee <- list()
 ee <- rbind(plot5, plot6, plot7, plot8)
 plot_grid(plotlist = ee, nrow = 5, ncol = 4, align = "v")
@@ -164,7 +178,7 @@ ee <- ezANOVA(data=df2.meanc, dv=mu_N1,
               wid=.(subj), within=.(lang, load), 
               between = NULL, type = 3, detailed = TRUE)
 print(ee)
-anova_apa(ee, es = c("pes")) # ges for general eta-squared, format = "docx"
+anova_apa(ee, es = c("pes"), format = "docx") # ges for general eta-squared, format = "docx"
 
 ###################### NOW LET'S CHECK THE RESIDUALS ##############
 # https://stats.stackexchange.com/questions/6081/testing-the-normality-assumption-for-repeated-measures-anova-in-r

@@ -1,3 +1,4 @@
+# transform data to normality. Test for normality what we had before and what we got after the transform.
 require(jtrans)
 require(nortest)
 

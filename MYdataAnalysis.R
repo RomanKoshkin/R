@@ -1,3 +1,6 @@
+# This script plots boxplots of WM loads by subject and direction of interpretation.
+# It also plots density plots of WM load.
+
 library(cowplot )
 library(plyr)
 
@@ -72,14 +75,14 @@ xhistog <- ggplot(df2, aes(CWnored)) +
 
 # plot_grid(xdensity, xhistog)
 
-xdensityCL <- ggplot() + 
-  geom_density(alpha=.5, aes(x=CLred, fill=lang), na.rm = TRUE, adjust = 1.5, colour="blue", data=df[which(df$lang=="RE"), ]) + 
-  geom_density(alpha=.5, aes(x=CLred, fill=lang), na.rm = TRUE, adjust = 1.5, colour="red", data=df[which(df$lang=="er"), ]) + 
-  scale_fill_manual(values = c('#999999','#E69F00')) + 
-  theme(legend.position=c(0.8,1), legend.justification=c(0,1))
-xdensityCW <- ggplot() + 
-  geom_density(alpha=.5, aes(x=CWred, fill=lang), na.rm = TRUE, adjust = 0.5, colour="blue", data=df[which(df$lang=="RE"), ]) + 
-  geom_density(alpha=.5, aes(x=CWred, fill=lang), na.rm = TRUE, adjust = 0.5, colour="red", data=df[which(df$lang=="er"), ]) + 
-  scale_fill_manual(values = c('#999999','#E69F00')) + 
-  theme(legend.position=c(0.8,1), legend.justification=c(0,1))
-plot_grid(xdensityCL, xdensityCW, labels=c("CL", "CW"), ncol = 2, nrow = 1)
+# xdensityCL <- ggplot() + 
+#   geom_density(alpha=.5, aes(x=CLred, fill=lang), na.rm = TRUE, adjust = 1.5, colour="blue", data=df[which(df$lang=="RE"), ]) + 
+#   geom_density(alpha=.5, aes(x=CLred, fill=lang), na.rm = TRUE, adjust = 1.5, colour="red", data=df[which(df$lang=="er"), ]) + 
+#   scale_fill_manual(values = c('#999999','#E69F00')) + 
+#   theme(legend.position=c(0.8,1), legend.justification=c(0,1))
+# xdensityCW <- ggplot() + 
+#   geom_density(alpha=.9, aes(x=CWred, fill=lang), na.rm = TRUE, adjust = 0.5, colour="blue", data=df[which(df$lang=="RE"), ]) + 
+#   geom_density(alpha=.9, aes(x=CWred, fill=lang), na.rm = TRUE, adjust = 0.5, colour="red", data=df[which(df$lang=="er"), ]) + 
+#   scale_fill_manual(values = c('#999999','#E69F00')) + 
+#   theme(legend.position=c(0.8,1), legend.justification=c(0,1))
+# plot_grid(xdensityCL, xdensityCW, labels=c("CL", "CW"), ncol = 2, nrow = 1)

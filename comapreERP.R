@@ -1,5 +1,8 @@
-# this code creates heatmaps for anova P-values and means as a function of condition cutoff
-# quantiles. The p-values are both for ANOVA and LMEM
+# this code plots heatmaps of P-values (obtained from ANOVA and LMEM tests) 
+# as well as voltage means for P1 and N1 as a function of condition cutoff
+# quantiles.
+# SEE ALSO EffectSizes_multiple.R
+
 cat("\014")
 library(plyr)
 library(Rmisc)
@@ -31,7 +34,7 @@ estimator <- "CLred"
 
 subjects = c('KOK', 'GRU', 'ELT','KOZ', 'POG', 'KOS', 'ROM', 'SHE', 'BUL')
 languages = c('er', 'RE')
-df <- read.csv("/Users/RomanKoshkin/Documents/R/dataframe_20Hz_interp1.csv")
+df <- read.csv("/Users/RomanKoshkin/Documents/R/dataframe_0.25-30Hz.csv")
 P <- read.table('P.txt')
 
 df2 <- df[df$subj != 'a', ] # cleanup data

@@ -1,6 +1,7 @@
-# this code creates heatmaps for anova P-values and means as a function of condition cutoff
-# quantiles. The p-values are for ANOVA
-cat("\014")
+# this code performs ANOVA using aov and the EZ package.
+# The statistics, p-values, effect sizes are reported in the APA format
+# UNLIKE effSizeEZ_multiple.R, it does not perform multiple testing.
+
 library(plyr)
 library(Rmisc)
 library(ggplot2)
@@ -15,48 +16,33 @@ library(ez)
 library(apa)
 cat("\014")
 ############## PARAMETERS #############################
-bounds = c(0.05, 0.95)
-step = 0.1
-total = (length(seq(bounds[1], bounds[2], by = step)))^2/2
 
+# set the window of interest (mu_N1 or mu_P1):
 win = "mu_N1"
+
+# define the model formula:
 formula <- as.formula(paste(win," ~ lang * load + Error(subj / (lang * load))", sep=""))
 
-estimatorVector <- c("CLred")#, "CWred", "SYL", "CLnored", "CWnored")
-
-
-
-newlabels <- c( "CLall", "CWall", "SYL", "CW", "CL")
-jj <- 0
-plot1 <- list()
-plot2 <- list()
-plot3 <- list()
-plot4 <- list()
-plot5 <- list()
-plot6 <- list()
-plot7 <- list()
-plot8 <- list()
-###############################################################
+# way to estimate WM load:
+estimatorVector <- c("CLred") # "CWred", "SYL", "CLnored", "CWnored"
 
 subjects = c('KOK', 'GRU', 'ELT','KOZ', 'POG', 'KOS', 'ROM', 'SHE', 'BUL')
 languages = c('er', 'RE')
-df <- read.csv("/Users/RomanKoshkin/Documents/R/dataframe_20Hz_interp1.csv")
+
+# read in the data:
+df <- read.csv("/Users/RomanKoshkin/Documents/R/dataframe_0.25-30Hz.csv")
+
 LO <- 0.1 #seq(0.05, 0.95, by = step)
 HI <- 0.9 #seq(0.05, hiQ, by = step)
 
-for (estimator in estimatorVector){
-print(estimator)
-jj = jj + 1
-i = 0
-P <- read.table('P.txt')
-pb <- txtProgressBar(min = 0, max = total, style = 3)
-df2 <- df[df$subj != 'a', ] # cleanup data
+########################################################
+bounds = c(LO, HI)
 
-est <- df2[[estimator]]
-for (hiQ in HI){
-  
-  for(loQ in LO){
-    bounds = c(loQ, hiQ)
+# new recode WM loads based on the cutoffs specified:
+for (estimator in estimatorVector){
+    print(estimator)
+    df2 <- df[df$subj != 'a', ] # cleanup data
+    est <- df2[[estimator]]
     df2$load <- 0
     for (subject in subjects){
       for(language in languages){
@@ -72,93 +58,17 @@ for (hiQ in HI){
     df2.meanc <- summarySE(df2, measurevar=win, groupvars=c("subj","lang", "load"))
     df2.aov <- aov(data=df2.meanc, formula)
     df2.meanc$load <- as.factor(df2.meanc$load)
-    
-    lang_main = 0
-    load_main = 0
-    langXload = 0
-    P_mixed = 0
-    idxLOWer <- df2$load=='low' & df2$lang=='er'
-    idxHIer <- df2$load=='high' & df2$lang=='er'
-    idxLOWRE <- df2$load=='low' & df2$lang=='RE'
-    idxHIRE <- df2$load=='high' & df2$lang=='RE'
-    effSizeN1er = mean(df2[idxLOWer, 'mu_N1']) - mean(df2[idxHIer, 'mu_N1'])
-    effSizeN1RE = mean(df2[idxLOWRE, 'mu_N1']) - mean(df2[idxHIRE, 'mu_N1'])
-    effSizeP1er = mean(df2[idxLOWer, 'mu_P1']) - mean(df2[idxHIer, 'mu_P1'])
-    effSizeP1RE = mean(df2[idxLOWRE, 'mu_P1']) - mean(df2[idxHIRE, 'mu_P1'])
-
-    
-    lang_main = unlist(summary(df2.aov)[[2]])[[9]]
-    load_main = unlist(summary(df2.aov)[[3]])[[9]]
-    langXload = unlist(summary(df2.aov)[[4]])[[9]]
-    P <- rbind(P, c(loQ, hiQ, lang_main, load_main, langXload, P_mixed, effSizeN1er, effSizeN1RE, effSizeP1er, effSizeP1RE))
-    i = i + 1
-    setTxtProgressBar(pb, i)
-  }
 }
 
-Them2 <- theme(axis.title.x=element_blank(), axis.title.y=element_blank())
-plot5[[jj]] <- ggplot(data = P[-c(1), ], aes(x = hiQ, y = loQ)) +
-  geom_tile(aes(fill = effSizeN1er)) +
-  ggtitle(paste("N1, Eng-Rus", newlabels[jj])) +
-  scale_x_continuous(name = "Higher cutoff boundary (quantile)") +
-  scale_y_continuous(name = "Lower cutoff boundary (quantile)") +
-  scale_fill_gradientn(limits=c(min(P$effSizeN1er[-c(1)]),
-                                max(P$effSizeN1er[-c(1)])), 
-                       colours = rainbow(5), name=expression(paste(mu, "V"))) + Them2
-plot6[[jj]] <- ggplot(data = P[-c(1), ], aes(x = hiQ, y = loQ)) +
-  geom_tile(aes(fill = effSizeN1RE)) +
-  ggtitle(paste("N1, Rus-Eng", newlabels[jj])) +
-  scale_x_continuous(name = "Higher cutoff boundary (quantile)") +
-  scale_y_continuous(name = "Lower cutoff boundary (quantile)") +
-  scale_fill_gradientn(limits=c(min(P$effSizeN1RE[-c(1)]),
-                                max(P$effSizeN1RE[-c(1)])),
-                       colours = rainbow(5), name=expression(paste(mu, "V"))) + Them2
-plot7[[jj]] <- ggplot(data = P[-c(1), ], aes(x = hiQ, y = loQ)) +
-  geom_tile(aes(fill = effSizeP1er)) +
-  ggtitle(paste("P1, Eng-Rus", newlabels[jj])) +
-  scale_x_continuous(name = "Higher cutoff boundary (quantile)") +
-  scale_y_continuous(name = "Lower cutoff boundary (quantile)") +
-  scale_fill_gradientn(limits=c(min(P$effSizeP1er[-c(1)]),
-                                max(P$effSizeP1er[-c(1)])), 
-                       colours = rainbow(5), name=expression(paste(mu, "V"))) + Them2
-plot8[[jj]] <- ggplot(data = P[-c(1), ], aes(x = hiQ, y = loQ)) +
-  geom_tile(aes(fill = effSizeP1RE)) +
-  ggtitle(paste("P1, Rus-Eng", newlabels[jj])) +
-  scale_x_continuous(name = "Higher cutoff boundary (quantile)") +
-  scale_y_continuous(name = "Lower cutoff boundary (quantile)") +
-  scale_fill_gradientn(limits=c(min(P$effSizeP1RE[-c(1)]),
-                                max(P$effSizeP1RE[-c(1)])), 
-                       colours = rainbow(5), name=expression(paste(mu, "V"))) + Them2
-# plot_grid(plot5, plot6, plot7, plot8, labels = c("A", "B", "C", "D"), ncol = 2, nrow = 2)
-
-b <- c(0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.6, 0.8)
-clrs <- c("black","purple", "navyblue","blue", "darkmagenta","green", "yellow", "darkorange", "red")
-tit <- paste(win, newlabels[jj])
-Them <- theme(axis.title.x=element_blank(), axis.ticks.x=element_blank(), 
-              axis.title.y=element_blank(), axis.ticks.y=element_blank(), legend.position="none")
-plot1[[jj]] <- ggplot(data = P[-c(1), ], aes(x = hiQ, y = loQ)) + geom_raster(aes(fill = load_main)) + ggtitle(paste(tit, "Load")) + scale_fill_gradientn(colours=clrs,breaks=b) + Them
-plot2[[jj]] <- ggplot(data = P[-c(1), ], aes(x = hiQ, y = loQ)) + geom_raster(aes(fill = lang_main)) + ggtitle(paste(tit, "S.Lang.")) + scale_fill_gradientn(colours=clrs,breaks=b) + Them
-plot3[[jj]] <- ggplot(data = P[-c(1), ], aes(x = hiQ, y = loQ)) + geom_raster(aes(fill = langXload)) + ggtitle(paste(tit, "Load x S.Lang.")) + scale_fill_gradientn(colours=clrs,breaks=b) + Them
-
-
-# plot_grid(plot1, plot2, plot3, plot4, labels = c("A", "B", "C", "D"), ncol = 2, nrow = 2)
-}
-qq <- list()
-qq <- rbind(plot1,plot2, plot3)
-plot_grid(plotlist = qq, nrow = 5, ncol = 3, align = "v")
-
-ee <- list()
-ee <- rbind(plot5, plot6, plot7, plot8)
-plot_grid(plotlist = ee, nrow = 5, ncol = 4, align = "v")
 
 cat("\014")
-#print(summary(aov(data=df2.meanc, formula)))
+print(summary(aov(data=df2.meanc, formula)))
 ee <- ezANOVA(data=df2.meanc, dv=mu_N1,
               wid=.(subj), within=.(lang, load), 
               between = NULL, type = 3, detailed = TRUE)
 print(ee)
-anova_apa(ee, es = c("pes")) # ges for general eta-squared, format = "docx"
-
+anova_apa(ee, es = c("pes", format = "docx" )) # ges for general eta-squared
+stop('CODE STOPPED')
 ###################### NOW LET'S CHECK THE RESIDUALS ##############
 # https://stats.stackexchange.com/questions/6081/testing-the-normality-assumption-for-repeated-measures-anova-in-r
 # I don't know why, but this method gives completely crazy residuals:

@@ -1,8 +1,8 @@
-# this code creates heatmaps for anova P-values and means as a function of condition cutoff
+# this code creates heatmaps for anova P-values and means as a function of condition cutoff quantiles. 
+# The p-values are for ANOVA
 # + TABLE2 of the paper.
 # + INTERACTION PLOTS FOR THE PAPER (AND PREVIOUSLY THE THESIS)
 # this code IS BETTER than EffectSizes.R because it TryCatches when the aov model is singular.
-# quantiles. The p-values are for ANOVA
 # If you modify lines 59 and 61, you can do single tests.
 
 # if you do P1, modify, lines 197 (for the proper limits c(0,1))

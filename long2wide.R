@@ -1,4 +1,5 @@
 # convert data from default R (long) to wide (SPSS)
+
 library(reshape2)
 library(Rmisc)
 df2.sum <- summarySEwithin(df2, measurevar = "mu_N1",

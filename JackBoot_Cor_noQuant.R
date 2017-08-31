@@ -1,5 +1,5 @@
-# this code computes correlations between mu_N1 and different WMload estimators
-# the quantiles are computed for all subjects OVERALL, not within subjects and languages
+# this code computes correlations between mu_N1 and WM load
+# the quantiles are computed for the across all the subjects and languages, not within subjects and languages
 
 cat("\014")
 
@@ -10,7 +10,7 @@ estimator = "SYL"
 perm = 2000
 
 y <- 0
-df <- read.csv("/Users/RomanKoshkin/Documents/R/dataframe_interp1.csv")
+df <- read.csv("/Users/RomanKoshkin/Documents/R/dataframe_0.25-30Hz.csv")
 df2 <- df[df$subj != 'a', ] # cleanup data
 
 # compute edges

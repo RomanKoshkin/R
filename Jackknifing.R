@@ -1,4 +1,4 @@
-# This code plots ERP amplitudes against WM loads. Jackknifing is used to plot different curves
+# This code plots ERP amplitudes against WM loads. Jackknifing is used to plot different curves.
 
 cat("\014")
 library(dplyr)

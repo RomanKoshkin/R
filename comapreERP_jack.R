@@ -1,4 +1,4 @@
-# this code does the same thing as compareERP.R, but uses jackknifing to estimate p-values.
+# this code does the same thing as compareERP.R, but uses the jackknife resampling to estimate p-values.
 cat("\014")
 library(plyr)
 library(Rmisc)
@@ -56,8 +56,6 @@ for (hiQ in seq(0.05, 0.95, by = step)){
       }
     }
     df <- df2
-    
-    
     
     for (omitted in subjects){
     # leave one out:
@@ -151,8 +149,7 @@ plot_grid(plot5, plot6, plot7, plot8, labels = c("A", "B", "C", "D"), ncol = 2, 
   
 
 # now launch heatmap.R
-
-do.call(plot_grid, plots)
+# do.call(plot_grid, plots)
 
 # ##################
 # # now try to plot the same thing, but average data between subjects:

@@ -188,6 +188,3 @@ plot_grid(plotlist = qq, nrow = 5, ncol = 3, align = "v")
 ee <- list()
 ee <- rbind(plot5, plot6, plot7, plot8)
 plot_grid(plotlist = ee, nrow = 5, ncol = 4, align = "v")
-
-
-

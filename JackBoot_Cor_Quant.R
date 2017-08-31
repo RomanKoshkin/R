@@ -1,3 +1,7 @@
+# This script computes the correlation between the N1 amplitude and WM load using 
+# the jacknife (leave-one-out). It also computes bootstrapped confidence intervals
+# for the correlation
+library (boot)
 cat("\014")
 
 subjects = c('XXX', 'KOK', 'ELT','KOZ', 'POG', 'KOS', 'ROM', 'SHE', 'BUL')#, 'GRU')

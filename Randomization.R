@@ -1,5 +1,6 @@
+# This code performs a randomization/bootstrap test:
 # DESCRIPTION AND JUSTIFICATION IS HERE: http://www.uvm.edu/~dhowell/StatPages/Permutation%20Anova/PermTestsAnova.html
-#This code performs a randomization/bootstrap test:
+
 library(Rmisc)
 #parameters:
 loQ = 0.10

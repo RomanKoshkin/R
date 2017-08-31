@@ -1,4 +1,5 @@
 ############## NOW make INTERACTION PLOTS (only in sinle-step cycle mode) ####### 
+newlabels <- c( "CLall", "CWall", "SYL", "CW", "CL")
 df3.meanc <- summarySE(df2, measurevar=win, groupvars=c("lang", "load"))
 df3.meanc$load <- factor(df3.meanc$load, levels = c("high", "mid", "low")) # order the factors appropriately
 counter = counter + 1

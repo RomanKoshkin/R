@@ -1,7 +1,11 @@
+# Tukey HSD and other things
+
 require(nlme)         ## for lme()
-require(multcomp)  ## for multiple comparison stuff
+require(multcomp)     ## for multiple comparison stuff
 require(lme4)
 require(Tukey)
+require(ez)
+win = 'mu_N1'
 options(contrasts=c("contr.sum", "contr.poly"))
 df2$load <- as.factor(df2$load)
 df2.meanc <- summarySE(df2, measurevar=win, groupvars=c("subj","lang", "load"))
@@ -10,9 +14,6 @@ df2.meanc <- summarySE(df2, measurevar=win, groupvars=c("subj","lang", "load"))
 # the standard aov and ez produce the same F-values, but lme and lmer don't:
 Aov.mod <- aov(mu_N1 ~ lang * load + Error(subj/(load * lang)), data = df2.meanc)
 summary(Aov.mod)
-
-anova_1<-aov_ez(data=df2.meanc, id="subj", dv="mu_N1", within=c("lang", "load"))
-anova_1
 
 interaction.plot(response = df2.meanc$mu_N1, x.factor = df2.meanc$load, trace.factor = df2.meanc$lang,
                  xlab = "load",
@@ -38,12 +39,6 @@ drop1(Aov.mod, .~., test="F")
 
 anova(lm(mu_N1 ~ lang * load, data = df2.meanc, type="III",
       contrasts=list(lang=contr.sum, load=contr.sum)))
-
-library(ez)
-
-
-
-
 
 SScomp <- (mean(df2$mu_N1[df2$load=="low"]) - mean(df2$mu_N1[df2$load=="high"]))^2
 dfcomp <- 1

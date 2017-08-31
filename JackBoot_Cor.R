@@ -1,3 +1,5 @@
+# This script explores the correlation between WM load and N1 amplitude in 'leave-one subject-out' data.
+
 cat("\014")
 estimator <- c("CWred", "CLred", "SYL", "CWnored", "CLnored")
 subjects = c('KOK', 'GRU', 'ELT','KOZ', 'POG', 'KOS', 'ROM', 'SHE', 'BUL')
@@ -29,7 +31,7 @@ for (LeftOutSubj in subjects){
   r <- q$adj.r.squared
   print(paste("Adjusted R squared = ", round(r, digits = 4), "p = ", round(q$coefficients[8], digits = 3)))
 
-  # compute bootstrapped p-value:
+  # compute randomization p-value:
   r_boot <- 0
   for(j in seq(1,perm)){
   y_resampled <- sample(y,length(y), replace=T)

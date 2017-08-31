@@ -1,3 +1,5 @@
+# This script compares different linear mixed effects models (e.g. fixed and random slopes)
+
 library(languageR)
 library(dplyr)
 library(lme4)
