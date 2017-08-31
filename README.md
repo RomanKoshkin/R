@@ -1,0 +1,3 @@
+## Description
+
+This repository contains **R scripts** and data used as part of the EEG/ERP study to explore how WM load affects attention to task-irrelevant probe stimuli during simultaneous interpreting. The draft of the paper presenting the key findings is available at [bioRxiv.org](https://cloud.mail.ru/public/3Lon/PVvjRVfY4). Note that this repo contains only R scripts we used  to do statistical tests on our data, as well as to generate plots. For other scripts and datasets, refer to our other repository [here](https://github.com/RomanKoshkin/EEG) and [here](https://github.com/RomanKoshkin/VBA).
