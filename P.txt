@@ -1,2 +1,0 @@
-"loQ" "hiQ" "lang_main" "load_main" "langXload" "P_mixed" "effSizeN1er" "effSizeN1RE" "effSizeP1er" "effSizeP1RE"
-"1" 0 0 0 0 0 0 0 0 0 0
